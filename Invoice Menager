@@ -1,1 +1,20 @@
+public class InvoiceMenager2 {/**klasa main e cila thirr dy klaset e tjera dhe luan rolin e kontrollerit*/
+
+    public static void main(String[]args){
+        InvoiceReader r = new InvoiceReader();
+        final int width= 300;
+        int height=250;
+        int numri = r.getNumri();
+        if(numri>1){/**metoda per rritjen e lartesise se frame varsisht se sa artikuj kemi ndersa gjersia eshte e pandryshueshme*/
+            height = height+(numri-1)*10;
+        }
+        r.readBasic();
+        r.readProduct();
+        r.readSasia();
+        r.readPrice();
+
+        InvoiceWriter w = new InvoiceWriter(width,height,r.getBasic(),r.getProduct(),r.getSasia(),r.getPrice(),r.getNumri());
+
+    }
+}
 
