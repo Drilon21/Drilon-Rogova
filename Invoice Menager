@@ -17,4 +17,160 @@ public class InvoiceMenager2 {/**klasa main e cila thirr dy klaset e tjera dhe l
 
     }
 }
+------------------------------------------------------------------------------------------------------------------------------
+import javax.swing.*;
+import java.awt.*;
+import java.util.*;
+public class InvoiceWriter extends JPanel{/**klasa e cila merret me shfaqjen e outputit tek shfrytzuesi*/
+    private String[]product;
+    private String[]basic;
+    private int[]sasia;
+    private double[]qmimi;
+    private int width ;
+    private int height ;
+    private int numri;
+
+    public  InvoiceWriter(int w,int h,String[]b,String[]a,int[]z,double[]t,int k){/**konstruktori i ksaj klase merret me inicializimin e variablave si dhe me krijimin e frame-it*/
+        this.product = a;
+        this.basic = b;
+        this.sasia = z;
+        this.qmimi = t;
+        this.numri = k;
+        this.width = w;
+        this.height = h;
+        JFrame obj = new JFrame();
+        obj.getContentPane().add(this);
+        obj.setSize(width,height);
+        obj.setVisible(true);
+    }
+    GregorianCalendar calendar = new GregorianCalendar();
+    String c = Integer.toString(calendar.get(calendar.MONTH));
+    String d = Integer.toString(calendar.get(calendar.DATE));
+    String y = Integer.toString(calendar.get(calendar.YEAR));
+    String time="Ora: "+calendar.get(Calendar.HOUR_OF_DAY)+":"+calendar.get(Calendar.MINUTE)+""+calendar.get(Calendar.AM_PM);
+
+
+
+    public void paintComponent(Graphics g){/**metoda kryesore e ksaj klase e cila ka per detyre shfaqjen e outputit*/
+        g.setColor(Color.black);
+        g.drawRect(5,5,width,height);
+        g.drawString("Kupon fiskal",width/2-30,height-30);
+        g.drawString(d+"."+c+"."+y,width/2-30,height-50);
+        g.drawString(time,width/2-30,height-65);
+
+
+        g.drawString("Kompania",10,20);
+        g.drawString("Rruga",10,35);
+        g.drawString("Vendi",10,50);
+        g.drawString("Numri tel.",10,65);
+        g.drawLine(5,70,width,70);
+
+        g.drawString("Artikujt",10,85);
+        g.drawString("Sasia",90,85);
+        g.drawString("Qmimi",150,85);
+        g.drawString("Totali",210,85);
+        g.drawLine(5,100+numri*15,width,100+numri*15);
+        g.drawString("Totali ne euro:",5,115+numri*15);
+        g.drawLine(5,95,width,95);
+
+        g.drawString(basic[0],100,20);
+        g.drawString(basic[1],100,35);
+        g.drawString(basic[2],100,50);
+        g.drawString(basic[3],100,65);
+
+
+        for(int i = 0; i<numri; i++){
+            int distanca = 110;
+            g.drawString(product[i],10,distanca+i*15);
+
+        }
+        for(int i = 0; i<numri; i++){
+            int distanca = 110;
+            g.drawString(Integer.toString(sasia[i]),100,distanca+i*15);
+
+        }
+        for(int i = 0; i<numri; i++){
+            int distanca = 110;
+            g.drawString(Double.toString(qmimi[i]),150,distanca+i*15);
+
+        }
+        for(int i = 0; i<numri; i++){
+            int distanca = 110;
+            g.drawString(Double.toString(sasia[i]*qmimi[i]),210,distanca+i*15);
+        }
+        double rez = 0;
+        for(int i = 0; i<numri; i++){
+            rez = rez + sasia[i]*qmimi[i];
+        }
+        g.drawString(Double.toString(rez),210,115+numri*15);
+
+    }
+
+
+}
+-----------------------------------------------------------------------------------------------------------------------------
+import javax.swing.*;
+public class InvoiceReader {/**klasa reader merret me ruajtjen e inputit qe merret nga shfrytezuesi dhe pastaj perdoret ne klaset e tjera*/
+
+    public static int numri_i_produkteve = Integer.parseInt(JOptionPane.showInputDialog("Sa produkte te ndryshme deshironi?"));
+
+
+    String[]basic = new String[4];
+    public String[] readBasic(){
+        basic[0] = JOptionPane.showInputDialog("Shenoni emrin e kompanise");
+        basic[1] = JOptionPane.showInputDialog("Shenoni rrugen");
+        basic[2] = JOptionPane.showInputDialog("Shenoni vendin");
+        basic[3] = JOptionPane.showInputDialog("Shenoni numrin e telefonit");
+        return basic;
+    }
+/**metodat per ruajtjen e te dhenave ne array*/
+    String[]product = new String[numri_i_produkteve];
+    public String[] readProduct(){
+        for(int n = 0;n<numri_i_produkteve; n++){
+            product[n] = JOptionPane.showInputDialog("Sheno produktin");
+            if(product[n]==null || product[n].equals("")){
+                product[n] = JOptionPane.showInputDialog("Produkti duhet te kete nje emer!!");
+            }
+        }
+        return product ;
+    }
+    int[]sasia = new int[numri_i_produkteve];
+    public int[] readSasia(){
+        for(int i = 0 ; i<numri_i_produkteve; i++){
+            sasia[i] = Integer.parseInt(JOptionPane.showInputDialog("Sheno sasine e produktit "));
+            if(sasia[i]<=0){
+                sasia[i] = Integer.parseInt(JOptionPane.showInputDialog("Sasia duhet te jete numer pozitiv me i madh se 0!! "));
+            }
+        }
+        return sasia;
+
+    }
+
+    double[]qmimi = new double[numri_i_produkteve];
+    public double[] readPrice(){
+        for(int i = 0; i< numri_i_produkteve; i++){
+            qmimi[i] = Double.parseDouble(JOptionPane.showInputDialog("Sheno qmimin e produktit e produktit "));
+            if(qmimi[i]<0){
+                qmimi[i] = Double.parseDouble(JOptionPane.showInputDialog("Qmimi duhet te jete numer pozitiv me i madh se 0!!"));
+            }
+        }
+        return qmimi;
+    }
+/**metodat per kthimin e array-ve per perdorim te metutjeshem te tyre*/
+    public double[] getPrice(){
+        return qmimi;
+    }
+    public int[] getSasia(){
+        return sasia;
+    }
+    public String[] getProduct(){
+        return product;
+    }
+    public String[] getBasic(){
+        return basic;
+    }
+    public int getNumri(){
+        return numri_i_produkteve;
+    }
+}
 
